@@ -13,15 +13,15 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
 
-        <!-- JUnit 5 -->
+
         <junit.jupiter.version>5.10.2</junit.jupiter.version>
 
-        <!-- Playwright Java version -->
+
         <playwright.version>1.49.0</playwright.version>
     </properties>
 
     <dependencies>
-        <!-- JUnit 5 -->
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -29,7 +29,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Playwright -->
+
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
             <artifactId>playwright</artifactId>
@@ -39,7 +39,7 @@
 
     <build>
         <plugins>
-            <!-- Surefire for JUnit 5 -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -49,7 +49,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Exec plugin so you can run Playwright codegen like in the handout -->
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
