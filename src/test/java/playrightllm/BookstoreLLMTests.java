@@ -1,4 +1,4 @@
-package playwrightLLM;
+package playrightllm;
 
 import com.microsoft.playwright.*;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
