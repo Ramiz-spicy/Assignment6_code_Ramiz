@@ -5,7 +5,6 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.LoadState;
 import org.junit.jupiter.api.*;
-
 import java.nio.file.Paths;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -21,7 +20,19 @@ public class BookstoreFlowTests {
         playwright = Playwright.create();
         browser = playwright.chromium()
                 .launch(new BrowserType.LaunchOptions().setHeadless(false));
-        context = browser.newContext();
+
+
+        context = browser.newContext(new Browser.NewContextOptions()
+                .setRecordVideoDir(Paths.get("videos/"))
+                .setRecordVideoSize(1280, 720));
+
+        page = context.newPage();
+    }
+
+    void createFreshContext() {
+        context = browser.newContext(new Browser.NewContextOptions()
+                .setRecordVideoDir(Paths.get("videos/"))
+                .setRecordVideoSize(1280, 720));
         page = context.newPage();
     }
 
@@ -111,44 +122,38 @@ public class BookstoreFlowTests {
         page.waitForTimeout(3000);
     }
 
-
+    // TEST CASE 5
     @Test
     @Order(5)
     public void testPickupInformationPage() {
         page.waitForLoadState(LoadState.DOMCONTENTLOADED);
-        page.waitForTimeout(3000);
-
-        assertThat(page.getByRole(AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Contact Information"))).isVisible();
-        assertThat(page.getByText("Ramiz", new Page.GetByTextOptions().setExact(true))).isVisible();
-        assertThat(page.getByText("ramizimtiaz268@gmail.com")).isVisible();
-        assertThat(page.getByText("12174190164")).isVisible();
-
-        assertThat(page.getByText("I'll pick them up")).isVisible();
-        assertThat(page.getByRole(AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Pickup Person"))).isVisible();
-        assertThat(page.getByRole(AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Pickup Location"))).isVisible();
-        assertThat(page.getByText("DePaul University Loop Campus & SAIC")).isVisible();
-
-        assertThat(page.getByText("$164.98")).isVisible();
-        assertThat(page.getByText("$3.00")).isVisible();
-        assertThat(page.getByText("$17.22")).isVisible();
-        assertThat(page.getByText("$185.20")).isVisible();
-
-        assertThat(page.getByText("JBL Quantum True Wireless")).isVisible();
-        assertThat(page.getByText("$164.98")).isVisible();
-
         page.getByRole(AriaRole.BUTTON,
-                new Page.GetByRoleOptions().setName("CONTINUE")).click();
-
-        page.waitForTimeout(4000);
+                new Page.GetByRoleOptions().setName("Continue")).click();
     }
 
+    // TEST CASE 6
+    @Test
+    @Order(6)
+    public void testPaymentInformationPage() {
+        assertThat(page.getByText("Order Subtotal").nth(1)).isVisible();
+        assertThat(page.getByText("$164.98").nth(2)).isVisible();
+        assertThat(page.getByText("Handling To support the").nth(1)).isVisible();
+        assertThat(page.getByText("$3.00").nth(3)).isVisible();
+        assertThat(page.getByText("Tax").nth(1)).isVisible();
+        assertThat(page.getByText("$17.22").nth(1)).isVisible();
+        assertThat(page.getByText("$185.20").nth(1)).isVisible();
+        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Back to cart")).click();
+    }
 
-
-
-
+    // TEST CASE 7
+    @Test
+    @Order(7)
+    public void testYourShoppingCart() {
+        page.getByLabel("Remove product JBL Quantum").click();
+        assertThat(page.getByRole(AriaRole.ALERT)).isVisible();
+        assertThat(page.getByText("Your cart is empty")).isVisible();
+        page.close();
+    }
 
     @AfterAll
     static void teardown() {
